@@ -1,0 +1,12 @@
+{
+  "name": "bullet",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "yarn@4.3.0",
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.2.5",
+    "lodash-es": "^4.17.21"
+  }
+}
