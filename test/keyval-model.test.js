@@ -1,7 +1,7 @@
+import "./test-helper.js";
+
 import { KeyValModel } from "../src/keyval-model.js";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import test from "node:test";
-import assert from "node:assert";
 
 class MySettings extends KeyValModel {
   static attributes = {
