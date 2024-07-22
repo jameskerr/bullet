@@ -1,12 +1,22 @@
 {
   "name": "bullet",
-  "version": "1.0.0",
-  "main": "index.js",
+  "version": "0.0.1",
+  "exports": "./bullet.js",
+  "types": "./bullet.d.ts",
   "license": "MIT",
   "type": "module",
   "packageManager": "yarn@4.3.0",
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.5",
-    "lodash-es": "^4.17.21"
+    "lodash-es": "^4.17.21",
+    "pluralize": "^8.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.2"
+  },
+  "scripts": {
+    "types": "tsc bullet.js --allowJs -d --outdir . --skipLibCheck --module esnext --declaration --emitDeclarationOnly",
+    "test-watch": "node --test --watch",
+    "test": "node --test"
   }
 }

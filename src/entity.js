@@ -1,18 +1,21 @@
 import { createSlice, nanoid } from "@reduxjs/toolkit";
 import { snakeCase } from "lodash-es";
+import pluralize from "pluralize";
 import { createEntityReducers } from "./entity/reducers.js";
 import { createEntitySelectors } from "./entity/selectors.js";
 import { Schema } from "./entity/schema.js";
+import { cache } from "./utils/cache.js";
 
-export class EntityModel {
+export class Entity {
   static store = null;
+  static useSelector = null;
 
   static get slice() {
     return { [this.sliceName]: this.reducer };
   }
 
   static get sliceName() {
-    return snakeCase(this.name);
+    return pluralize.plural(snakeCase(this.name));
   }
 
   static get reduxSlice() {
@@ -36,7 +39,9 @@ export class EntityModel {
   }
 
   static get selectors() {
-    return createEntitySelectors(this.selectSlice.bind(this));
+    return cache(this, "_selectors", () =>
+      createEntitySelectors(this.selectSlice.bind(this), this)
+    );
   }
 
   static dispatch(action) {
@@ -47,7 +52,7 @@ export class EntityModel {
     return selector(this.store.getState());
   }
 
-  static create(attrs) {
+  static create(attrs = {}) {
     const entity = new this(attrs);
     entity.save();
     return entity;
@@ -57,6 +62,32 @@ export class EntityModel {
     const attrs = this.select(this.selectors.find(id));
     if (!attrs) return null;
     return new this(attrs);
+  }
+
+  static where(attrs) {
+    return this.all.filter((item) => {
+      return Object.keys(attrs).every((key) => attrs[key] === item[key]);
+    });
+  }
+
+  static get all() {
+    return this.select(this.selectors.all);
+  }
+
+  static destroyAll() {
+    this.dispatch(this.actions.destroyAll());
+  }
+
+  static get count() {
+    return this.select(this.selectors.count);
+  }
+
+  static useAll() {
+    return this.useSelector(this.selectors.all);
+  }
+
+  static use(id) {
+    return this.useSelector(this.selector.find(id));
   }
 
   constructor(attrs = {}) {
@@ -73,16 +104,23 @@ export class EntityModel {
 
   save() {
     if (this.isNewRecord) {
-      this.id = nanoid();
+      this.id = this.id || nanoid();
       this.createdAt = new Date();
       this.updatedAt = new Date();
       this.Slice.dispatch(this.Slice.actions.create(this.serialize()));
     } else {
+      this.Slice.dispatch(
+        this.Slice.actions.update({ id: this.id, changes: this.serialize() })
+      );
     }
   }
 
+  destroy() {
+    this.dispatch(this.Slice.actions.destroy(this.id));
+  }
+
   get isNewRecord() {
-    return !this.id;
+    return !this.createdAt;
   }
 
   get attributes() {
@@ -93,5 +131,13 @@ export class EntityModel {
 
   serialize() {
     return this.schema.serialize(this.attrs);
+  }
+
+  dispatch(...args) {
+    return this.constructor.dispatch(...args);
+  }
+
+  select(selector) {
+    return this.constructor.select(selector);
   }
 }

@@ -1,8 +1,8 @@
 import "./test-helper.js";
-import { EntityModel } from "../src/entity-model.js";
+import { Entity } from "../src/entity.js";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 
-class Book extends EntityModel {
+class Book extends Entity {
   static attributes = {
     title: { type: String, default: "Untitled" },
     pageCount: { type: Number, default: 0 },
@@ -16,7 +16,7 @@ const store = configureStore({
   }),
 });
 
-EntityModel.store = store;
+Entity.store = store;
 
 test("initialize a book", () => {
   const book = new Book();
@@ -35,4 +35,54 @@ test("timestamps are serialized and deserialized", () => {
   const { id } = Book.create({ title: "my_book" });
   const book = Book.find(id);
   assert.equal(Date, book.createdAt.constructor);
+});
+
+test("get all entities", () => {
+  const books = Book.all;
+  assert.equal(Array, books.constructor);
+  assert.equal(Book, books[0].constructor);
+});
+
+test("destroy all", () => {
+  Book.destroyAll();
+  assert.equal(0, Book.count);
+});
+
+test("create with id", () => {
+  Book.create({ id: "me" });
+  assert.equal("me", Book.all[0].id);
+});
+
+test("where", () => {
+  Book.destroyAll();
+  Book.create({ title: "hello", pageCount: 1 });
+  Book.create({ title: "hello", pageCount: 2 });
+  Book.create({ title: "hello", pageCount: 3 });
+  Book.create({ title: "goodbye", pageCount: 3 });
+
+  assert.equal(3, Book.where({ title: "hello" }).length);
+  assert.equal(1, Book.where({ title: "goodbye" }).length);
+  assert.equal(1, Book.where({ title: "hello", pageCount: 1 }).length);
+  assert.equal(2, Book.where({ pageCount: 3 }).length);
+});
+
+test("all selectors memoizes results", () => {
+  const array = Book.all;
+  const array2 = Book.all;
+
+  assert.equal(array, array2);
+});
+
+test("does not memoizes if changed", () => {
+  const array = Book.all;
+  Book.create({ title: "push" });
+  const array2 = Book.all;
+
+  assert.notEqual(array, array2);
+});
+
+test("destroy one", () => {
+  const book = Book.create({ title: "will be gone" });
+  book.destroy();
+  assert.equal(null, Book.find(book.id));
 });

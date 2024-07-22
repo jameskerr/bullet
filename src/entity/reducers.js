@@ -27,14 +27,14 @@ export function createEntityReducers() {
         adapter.upsertOne(state, action.payload);
       }
     },
-    delete: (state, action) => {
+    destroy: (state, action) => {
       if (Array.isArray(action.payload)) {
-        adapter.removeMany(state, action.payload.map(getId));
+        adapter.removeMany(state, action.payload);
       } else {
-        adapter.removeOne(state, getId(action.payload));
+        adapter.removeOne(state, action.payload);
       }
     },
-    deleteAll: (state) => {
+    destroyAll: (state) => {
       adapter.removeAll(state);
     },
   };
