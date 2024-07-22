@@ -96,3 +96,13 @@ test("using a different sliceName", () => {
 
   assert.equal("$things", Thing.getSliceName());
 });
+
+test("action prefix", () => {
+  class Thing extends Entity {}
+  assert.equal("things/create", Thing.actions.create.toString());
+
+  class Thing2 extends Entity {
+    static actionPrefix = "$thingys";
+  }
+  assert.equal("$thingys/create", Thing2.actions.create.toString());
+});

@@ -10,6 +10,7 @@ export class Entity {
   static store = null;
   static useSelector = null;
   static sliceName = null;
+  static actionPrefix = null;
 
   static get slice() {
     return { [this.getSliceName()]: this.reducer };
@@ -19,9 +20,13 @@ export class Entity {
     return this.sliceName || pluralize.plural(snakeCase(this.name));
   }
 
+  static getActionPrefix() {
+    return this.actionPrefix || this.getSliceName();
+  }
+
   static get reduxSlice() {
     return createSlice({
-      name: this.getSliceName(),
+      name: this.getActionPrefix(),
       reducers: createEntityReducers(),
       initialState: { ids: [], entities: {} },
     });
