@@ -86,3 +86,13 @@ test("destroy one", () => {
   book.destroy();
   assert.equal(null, Book.find(book.id));
 });
+
+test("using a different sliceName", () => {
+  assert.equal("books", Book.getSliceName());
+
+  class Thing extends Entity {
+    static sliceName = "$things";
+  }
+
+  assert.equal("$things", Thing.getSliceName());
+});

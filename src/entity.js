@@ -9,18 +9,19 @@ import { cache } from "./utils/cache.js";
 export class Entity {
   static store = null;
   static useSelector = null;
+  static sliceName = null;
 
   static get slice() {
-    return { [this.sliceName]: this.reducer };
+    return { [this.getSliceName()]: this.reducer };
   }
 
-  static get sliceName() {
-    return pluralize.plural(snakeCase(this.name));
+  static getSliceName() {
+    return this.sliceName || pluralize.plural(snakeCase(this.name));
   }
 
   static get reduxSlice() {
     return createSlice({
-      name: this.sliceName,
+      name: this.getSliceName(),
       reducers: createEntityReducers(),
       initialState: { ids: [], entities: {} },
     });
@@ -35,7 +36,7 @@ export class Entity {
   }
 
   static selectSlice() {
-    return this.select((state) => state[this.sliceName]);
+    return this.select((state) => state[this.getSliceName()]);
   }
 
   static get selectors() {
