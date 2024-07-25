@@ -1,6 +1,6 @@
 {
   "name": "bullet",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "exports": "./bullet.js",
   "types": "./bullet.d.ts",
   "license": "MIT",
