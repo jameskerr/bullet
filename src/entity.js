@@ -98,7 +98,7 @@ export class Entity {
 
   constructor(attrs = {}) {
     this.Slice = this.constructor;
-    this.schema = new Schema(this.Slice.attributes);
+    this.schema = new Schema(this.Slice.schema);
     this.attrs = this.schema.deserialize(this.schema.fill(attrs));
     for (const name of this.schema.names) {
       Object.defineProperty(this, name, {

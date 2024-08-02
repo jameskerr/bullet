@@ -3,7 +3,7 @@ import { Entity } from "../src/entity.js";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 
 class Book extends Entity {
-  static attributes = {
+  static schema = {
     title: { type: String, default: "Untitled" },
     pageCount: { type: Number, default: 0 },
     author: { type: String, default: "Unknown" },
