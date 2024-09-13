@@ -1,6 +1,6 @@
 {
   "name": "bullet",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "exports": "./bullet.js",
   "types": "./bullet.d.ts",
   "license": "MIT",
@@ -15,7 +15,6 @@
     "typescript": "^5.5.2"
   },
   "scripts": {
-    "types": "tsc bullet.js --allowJs -d --outdir . --skipLibCheck --module esnext --declaration --emitDeclarationOnly",
     "test-watch": "node --test --watch",
     "test": "node --test"
   }

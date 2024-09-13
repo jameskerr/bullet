@@ -41,5 +41,6 @@ declare module "bullet" {
     constructor(attributes?: Partial<A>);
     save(): boolean;
     destroy(): void;
+    update(): void;
   }
 }
