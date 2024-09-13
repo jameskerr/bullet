@@ -106,3 +106,9 @@ test("action prefix", () => {
   }
   assert.equal("$thingys/create", Thing2.actions.create.toString());
 });
+
+test("update", () => {
+  const book = Book.create({ title: "Hello" });
+  book.update({ title: "Goodbye" });
+  assert.equal("Goodbye", Book.find(book.id).title);
+});

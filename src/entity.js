@@ -115,10 +115,14 @@ export class Entity {
       this.updatedAt = new Date();
       this.Slice.dispatch(this.Slice.actions.create(this.serialize()));
     } else {
-      this.Slice.dispatch(
-        this.Slice.actions.update({ id: this.id, changes: this.serialize() })
-      );
+      this.update({ id: this.id, changes: this.serialize() });
     }
+  }
+
+  update(attrs = {}) {
+    this.Slice.dispatch(
+      this.Slice.actions.update({ id: this.id, changes: attrs })
+    );
   }
 
   destroy() {

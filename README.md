@@ -20,7 +20,7 @@ Bullet will pull in `@reduxjs/toolkit`.
 Let's make an entity. First create a class that extends the `Entity` base class that ships with Bullet. Then define the attributes like the example below. An entity will include the attributes `id`, `createdAt`, and `updatedAt` automatically by default.
 
 ```js
-import {Entity} from "bullet"
+import { Entity } from "bullet";
 
 export class Book extends Entity {
   static attributes = {
@@ -39,7 +39,7 @@ When you configure your store, you can use the `.slice` property on the `Book` c
 Books.slice; // => {books: Book.reducer}
 ```
 
-By default, the name of the slice is the snake_cased, plural, lowercased class name, but it can be configured using the static `sliceName` attribute.
+By default, the name of the slice is the camelCased, plural class name, but it can be configured using the static `sliceName` attribute.
 
 ```js
 class Book extends Entity {
@@ -60,11 +60,11 @@ const store = configureStore({
 Finally, give the Entity base class a reference to your redux store right after it's created.
 
 ```js
-import {Entity} from "bullet"
+import { Entity } from "bullet";
 
-const store = configureStore( /* ... */ )
+const store = configureStore(/* ... */);
 
-Entity.store = store
+Entity.store = store;
 ```
 
 I don't know about you, but I got sick of needing to import "dispatch" in every single one of my files. By providing the store to all your entities, you can use a terse, pleasant, high-level API to interact with your state, as you'll see in the next section.
@@ -76,7 +76,7 @@ The API mirrors ActiveRecord, the ORM that comes with Ruby on Rails. Here are a 
 **Create a New Book**
 
 ```js
-const book = Book.create({title: "The Secret Art of React"})
+const book = Book.create({ title: "The Secret Art of React" });
 ```
 
 You can pass a partial object of the entity's attributes to `Book.create()`. It will save it to the store, and return an instance of the Book class. Getters and setters for all attributes are automatically defined based on the static `attributes` object.
@@ -84,9 +84,9 @@ You can pass a partial object of the entity's attributes to `Book.create()`. It 
 **Get and Set Attributes**
 
 ```js
-book.title // "The Secret Art of React"
-book.pageCount // 0
-book.attributes // {id: "1", title: "The Secret Art of React", pageCount: 0, ...}
+book.title; // "The Secret Art of React"
+book.pageCount; // 0
+book.attributes; // {id: "1", title: "The Secret Art of React", pageCount: 0, ...}
 ```
 
 **Update a Book**
@@ -94,15 +94,15 @@ book.attributes // {id: "1", title: "The Secret Art of React", pageCount: 0, ...
 You can call `.save()` after mutating an instance.
 
 ```js
-const book = Book.create({title: "Pierce the Boilerplate"})
-book.pageCount = 4
-book.save() // Updates the store with the new page count.
+const book = Book.create({ title: "Pierce the Boilerplate" });
+book.pageCount = 4;
+book.save(); // Updates the store with the new page count.
 ```
 
 Or you can call `.update(attrs)` and pass a partial object of attributes to update.
 
 ```js
-book.update({author: "JK"}) // Also updates the store.
+book.update({ author: "JK" }); // Also updates the store.
 ```
 
 **Initialize a Book**
@@ -110,9 +110,9 @@ book.update({author: "JK"}) // Also updates the store.
 If you want to instantiate a new book instance without saving it to the store, you can simply `new` one up.
 
 ```js
-const book = new Book({title: "React for Dummies"}) // Not saved
+const book = new Book({ title: "React for Dummies" }); // Not saved
 
-book.save() // But now it's saved and given an id.
+book.save(); // But now it's saved and given an id.
 ```
 
 **Destroy a Book**
@@ -120,8 +120,8 @@ book.save() // But now it's saved and given an id.
 Call `.destroy()`
 
 ```js
-const book = Book.create({title: "Incriminating Evidence"})
-book.destroy() // Removed from the store
+const book = Book.create({ title: "Incriminating Evidence" });
+book.destroy(); // Removed from the store
 ```
 
 **Query for Books**
@@ -129,19 +129,19 @@ book.destroy() // Removed from the store
 If you need to get a single book by id, use `.find(id)`. It finds the attribute data in the state slice, then instantiates a new `Book` instance with those attributes.
 
 ```js
-const book = Book.find("1")
+const book = Book.find("1");
 ```
 
 If you want all the books, use `.all`
 
 ```js
-const books = Book.all
+const books = Book.all;
 ```
 
 If you want to filter the list of books use `.where(filters)`.
 
 ```js
-const books = Book.where({pageCount: 99})
+const books = Book.where({ pageCount: 99 });
 ```
 
 The `where` method will only match using strict equality on the attributes' values. This will improve as needs arise.
@@ -152,20 +152,20 @@ If you wish to use these entities in React and have the component re-render when
 
 ```jsx
 function LibraryInventory() {
-  const everything = Book.useAll
-  const filtered   = Book.useWhere({topic: "Teen Vampire"})
-  const single     = Book.use("1")
+  const everything = Book.useAll;
+  const filtered = Book.useWhere({ topic: "Teen Vampire" });
+  const single = Book.use("1");
 }
 ```
 
 These `use` hooks utilize `useSelector` from `react-redux`. Instead of Bullet directly depending on it, it will look for that function on the Entity class. So for now you must assign the method to the Entity like you did with the store.
 
 ```js
-import {useSelector} from "react-redux"
-import {Entity} from "bullet"
+import { useSelector } from "react-redux";
+import { Entity } from "bullet";
 
 // To use the selector hooks...
-Entity.useSelector = useSelector
+Entity.useSelector = useSelector;
 ```
 
 ## Extending your Entity
@@ -175,22 +175,21 @@ You'll likely want to add domain specific methods to your entities. Simply defin
 ```js
 class Book extends Entities {
   static attributes = {
-    authorId: {type: String, default: null}
-  }
-  
+    authorId: { type: String, default: null },
+  };
+
   burn() {
     // Select some state and dispatch an action.
-    const canBurn = this.select(getCanBurn)
-    if (canBurn) this.dispatch(burnBook(this.id))
+    const canBurn = this.select(getCanBurn);
+    if (canBurn) this.dispatch(burnBook(this.id));
   }
-  
+
   get author() {
     // Utilize your other entities.
-    return Author.find(this.authorId)
+    return Author.find(this.authorId);
   }
 }
 ```
-
 
 ## The KeyVal Reducer
 
