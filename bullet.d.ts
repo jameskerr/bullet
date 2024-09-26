@@ -20,6 +20,14 @@ declare module "bullet" {
     static useAll<T extends Entity<any>, A>(
       this: new (a: Partial<A>) => T
     ): T[];
+    static useWhere<T extends Entity<any>, A>(
+      this: new (a: Partial<A>) => T,
+      attrs: Partial<A>
+    ): T[];
+    static use<T extends Entity<any>, A>(
+      this: new (a: Partial<A>) => T,
+      id: string
+    ): T;
     static where<T extends Entity<any>, A>(
       this: new (a: Partial<A>) => T,
       attributes: Partial<A>
