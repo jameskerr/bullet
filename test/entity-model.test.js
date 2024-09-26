@@ -66,6 +66,18 @@ test("where", () => {
   assert.equal(2, Book.where({ pageCount: 3 }).length);
 });
 
+test("where returns the same reference with the same args", () => {
+  Book.destroyAll();
+  Book.create({ title: "hello", pageCount: 1 });
+  Book.create({ title: "hello", pageCount: 2 });
+  Book.create({ title: "hello", pageCount: 3 });
+  Book.create({ title: "goodbye", pageCount: 3 });
+
+  const ref1 = Book.where({ title: "hello" });
+  const ref2 = Book.where({ title: "hello" });
+  assert.equal(true, ref1 === ref2);
+});
+
 test("all selectors memoizes results", () => {
   const array = Book.all;
   const array2 = Book.all;

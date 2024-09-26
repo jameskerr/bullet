@@ -71,9 +71,7 @@ export class Entity {
   }
 
   static where(attrs) {
-    return this.all.filter((item) => {
-      return Object.keys(attrs).every((key) => attrs[key] === item[key]);
-    });
+    return this.select((state) => this.selectors.where(state, attrs));
   }
 
   static get all() {
@@ -94,6 +92,10 @@ export class Entity {
 
   static use(id) {
     return this.useSelector(this.selector.find(id));
+  }
+
+  static useWhere(attrs) {
+    return this.useSelector((state) => this.selectors.where(state, attrs));
   }
 
   constructor(attrs = {}) {
